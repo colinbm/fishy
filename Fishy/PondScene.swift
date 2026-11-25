@@ -1,12 +1,25 @@
 import SpriteKit
 
 /// The pond: one fish swims about; touching it makes a splash and a new fish arrives from an edge.
+/// Every few minutes the fish swims away on its own and a different one swims in (the only change on Apple TV).
 final class PondScene: SKScene {
 
     private var fish: FishNode?
     private var lastUpdate: TimeInterval = 0
     private var nextDecision: TimeInterval = 0
     private var spawnPending = false
+
+    // Timed swaps
+    private var fishAge: CGFloat = 0
+    private var swapAfter: CGFloat = 0
+    private var exitEdge = -1           // edge the last fish left by; the next one enters elsewhere
+    private var lastPalette = -1
+
+    /// Seconds before a fish swims away by itself. Override for testing with the launch argument `-swapSeconds 10`.
+    private func randomSwapTime() -> CGFloat {
+        let override = UserDefaults.standard.double(forKey: "swapSeconds")
+        return override > 0 ? CGFloat(override) : .random(in: 120...240)
+    }
 
     private var fishLength: CGFloat { min(size.width, size.height) * 0.17 }
     private var margin: CGFloat { fishLength * 0.9 }
@@ -69,10 +82,14 @@ final class PondScene: SKScene {
 
     private func spawnFish() {
         spawnPending = false
-        let f = FishNode(length: fishLength * CGFloat.random(in: 0.85...1.15),
-                         palette: FishNode.Palette.all.randomElement()!)
+        let palettes = FishNode.Palette.all
+        var paletteIndex = Int.random(in: 0..<palettes.count)
+        if paletteIndex == lastPalette { paletteIndex = (paletteIndex + 1) % palettes.count }
+        lastPalette = paletteIndex
+        let f = FishNode(length: fishLength * CGFloat.random(in: 0.85...1.15), palette: palettes[paletteIndex])
         let off = fishLength
-        let edge = Int.random(in: 0..<4)
+        var edge = Int.random(in: 0..<4)
+        if edge == exitEdge { edge = (edge + 1 + Int.random(in: 0..<3)) % 4 }
         switch edge {
         case 0: f.position = CGPoint(x: -off, y: .random(in: size.height * 0.2...size.height * 0.8))
         case 1: f.position = CGPoint(x: size.width + off, y: .random(in: size.height * 0.2...size.height * 0.8))
@@ -90,7 +107,27 @@ final class PondScene: SKScene {
         f.zRotation = f.heading
         addChild(f)
         fish = f
+        fishAge = 0
+        swapAfter = randomSwapTime()
         nextDecision = lastUpdate + 1.5
+    }
+
+    /// Send the fish off through the nearest edge (0 left, 1 right, 2 bottom, 3 top).
+    private func beginLeaving(_ f: FishNode) {
+        let distances = [f.position.x, size.width - f.position.x, f.position.y, size.height - f.position.y]
+        let edge = distances.indices.min { distances[$0] < distances[$1] }!
+        let headings: [CGFloat] = [.pi, 0, -.pi / 2, .pi / 2]
+        exitEdge = edge
+        f.isLeaving = true
+        f.targetHeading = headings[edge] + .random(in: -0.4...0.4)
+        f.targetSpeed = .random(in: 160...240)
+    }
+
+    private func fishLeft(_ f: FishNode) {
+        f.removeFromParent()
+        fish = nil
+        spawnPending = true
+        run(.sequence([.wait(forDuration: .random(in: 1.5...3.5)), .run { [weak self] in self?.spawnFish() }]))
     }
 
     // MARK: - Touch
@@ -123,6 +160,8 @@ final class PondScene: SKScene {
 
     /// A near miss makes the fish dart away from the paw.
     private func startle(_ f: FishNode, from p: CGPoint) {
+        // Fish crossing the edge keep their course, or they could get stuck off screen.
+        guard !f.isEntering, !f.isLeaving else { return }
         let d = hypot(p.x - f.position.x, p.y - f.position.y)
         guard d < f.length * 2.5 else { return }
         f.targetHeading = atan2(f.position.y - p.y, f.position.x - p.x) + .random(in: -0.5...0.5)
@@ -176,11 +215,22 @@ final class PondScene: SKScene {
             return
         }
 
-        if f.isEntering {
+        fishAge += dt
+
+        if f.isLeaving {
+            let off = f.length
+            if f.position.x < -off || f.position.x > size.width + off ||
+               f.position.y < -off || f.position.y > size.height + off {
+                fishLeft(f)
+                return
+            }
+        } else if f.isEntering {
             if f.position.x > margin, f.position.x < size.width - margin,
                f.position.y > margin, f.position.y < size.height - margin {
                 f.isEntering = false
             }
+        } else if fishAge >= swapAfter {
+            beginLeaving(f)
         } else {
             // Wander: every so often pick a new direction and pace.
             if currentTime >= nextDecision {

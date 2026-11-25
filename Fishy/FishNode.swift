@@ -29,6 +29,7 @@ final class FishNode: SKNode {
     var targetHeading: CGFloat = 0
     var targetSpeed: CGFloat = 0
     var isEntering = true
+    var isLeaving = false
 
     init(length: CGFloat, palette: Palette) {
         self.length = length

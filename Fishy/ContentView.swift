@@ -11,24 +11,28 @@ struct ContentView: View {
     var body: some View {
         SpriteView(scene: scene, preferredFramesPerSecond: 120)
             .ignoresSafeArea()
-            .statusBarHidden()
             .catProofed()
-            #if os(iOS)
-            .onAppear { UIApplication.shared.isIdleTimerDisabled = true }    // keep the screen awake
+            #if os(iOS) || os(tvOS)
+            .onAppear { UIApplication.shared.isIdleTimerDisabled = true }    // keep the screen awake / no screensaver
             .onDisappear { UIApplication.shared.isIdleTimerDisabled = false }
             #endif
     }
 }
 
 private extension View {
-    /// Hide the home indicator and make stray paw swipes less likely to leave the app (iOS 16+).
+    /// iPad only: hide the status bar and home indicator, and make stray paw swipes less likely to leave the app.
     @ViewBuilder func catProofed() -> some View {
-        if #available(iOS 16.0, macOS 13.0, *) {
-            self.persistentSystemOverlays(.hidden)
+        #if os(iOS)
+        if #available(iOS 16.0, *) {
+            self.statusBarHidden()
+                .persistentSystemOverlays(.hidden)
                 .defersSystemGestures(on: .all)
         } else {
-            self
+            self.statusBarHidden()
         }
+        #else
+        self
+        #endif
     }
 }
 
