@@ -21,7 +21,8 @@ final class PondScene: SKScene {
         return override > 0 ? CGFloat(override) : .random(in: 120...240)
     }
 
-    private var fishLength: CGFloat { min(size.width, size.height) * 0.17 }
+    /// Scales with the screen, but not too small on a narrow phone.
+    private var fishLength: CGFloat { max(min(size.width, size.height) * 0.17, max(size.width, size.height) * 0.11) }
     private var margin: CGFloat { fishLength * 0.9 }
 
     override func didMove(to view: SKView) {

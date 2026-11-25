@@ -38,7 +38,7 @@
         "DEVELOPMENT_TEAM": "3N4984X523",
         "INFOPLIST_KEY_CFBundleDisplayName": "Fishy",
         "INFOPLIST_KEY_ITSAppUsesNonExemptEncryption": "NO",
-        "CURRENT_PROJECT_VERSION": "1",
+        "CURRENT_PROJECT_VERSION": "2",
         "ENABLE_APP_SANDBOX": "YES",
         "ENABLE_PREVIEWS": "YES",
         "ENABLE_USER_SELECTED_FILES": "readonly",

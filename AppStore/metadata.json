@@ -1,0 +1,28 @@
+{
+  "locale": "en-GB",
+  "subtitle": "A fish for your cat to catch",
+  "promotionalText": "A free, ad-free fish for your cat to chase. It swims, hovers and darts around the screen, and when a paw lands on it, it splashes away and a new fish swims in.",
+  "keywords": "cat game,games for cats,cat toy,kitten,pet,fish,koi,pond,paw,catch,chase,mouse,laser,cats",
+  "description": "Fishy is a simple game for cats. A fish swims around the screen, cruising, hovering and darting. When your cat's paw lands on it, the fish vanishes in a splash and a new one swims in from the edge.\n\nMADE FOR CATS\n• Big, bright fish that move in bursts and pauses, the way cats like to hunt\n• Near misses make the fish dart away\n• Goldfish, koi and more, in different colours\n• Every few minutes the fish swims off and a new one arrives, even if nobody catches it\n\nCAT-PROOFED\n• Full screen, with no buttons, menus or pop-ups for paws to hit\n• The screen stays on while it plays\n• On recent iPadOS and iOS versions, swipes from the screen edge need a second swipe, so stray paws are less likely to leave the app. For a determined cat, turn on Guided Access in Settings › Accessibility.\n\nAPPLE TV\nOn Apple TV, Fishy turns your TV into a pond: a fish swims about, and every few minutes it swims off and another takes its place.\n\nFREE, WITH NO ADS\nNo ads, no in-app purchases, no accounts and no data collected. Just a fish.\n\nPlease keep an eye on your cat while it plays, and consider a screen protector for enthusiastic hunters.",
+  "supportUrl": "https://github.com/colinbm/fishy",
+  "privacyPolicyUrl": "https://github.com/colinbm/fishy/blob/main/PRIVACY.md",
+  "copyright": "2026 Colin Burn-Murdoch",
+  "primaryCategory": "GAMES",
+  "primarySubcategoryOne": "GAMES_CASUAL",
+  "primarySubcategoryTwo": "GAMES_FAMILY",
+  "secondaryCategory": "ENTERTAINMENT",
+  "reviewNotes": "Fishy is a game for cats. A fish swims around the screen; touching it (with a paw, or a finger) makes it splash away and a new fish swims in from an edge. Every few minutes a fish also swims off by itself and is replaced. There are deliberately no buttons or menus, so a cat can't leave the game by accident.\n\nOn Apple TV there is nothing to interact with: it shows the fish swimming, with a new one arriving every few minutes.\n\nNo sign-in, no network access, no data collected.",
+  "platforms": {
+    "IOS": {
+      "screenshots": {
+        "APP_IPHONE_67": "AppStore/screenshots/iphone",
+        "APP_IPAD_PRO_3GEN_129": "AppStore/screenshots/ipad"
+      }
+    },
+    "TV_OS": {
+      "screenshots": {
+        "APP_APPLE_TV": "AppStore/screenshots/tv"
+      }
+    }
+  }
+}
